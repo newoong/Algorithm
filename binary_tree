@@ -1,0 +1,26 @@
+def memoize(f): #이진트리 가짓수 top-down
+    memo={}
+    def helper(x):
+        if x not in memo:
+            memo[x]=f(x)
+        return memo[x]
+    return helper
+
+def bintree(n):
+    if n==0:
+        return 1
+    ret=0
+    for i in range(n):
+        ret+=bintree(i)*bintree(n-1-i)
+    return ret
+
+bintree=memoize(bintree)
+
+def bintree2(n): #이진트리 가짓수 bottom-up
+    memo={}
+    memo[0]=1
+    for i in range(1,n+1):
+        memo[i]=0
+        for j in range(i):
+            memo[i]+=memo[j]*memo[i-1-j]
+    return memo[n]
