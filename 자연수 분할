@@ -1,0 +1,6 @@
+def p(n,k): #자연수 n을 k가지로 분할하는 가짓 수
+    if n<k:
+        return 0
+    if k==1:
+        return 1
+    return p(n-k,k)+p(n-1,k-1)
