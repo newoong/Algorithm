@@ -1,4 +1,4 @@
-def binom(n,k): #이항계수 top-down
+def binom(n,k): #이항계수 bottom-up
     memo={}
     if n<0 or k<0:
         return 0
@@ -13,3 +13,24 @@ def binom(n,k): #이항계수 top-down
             memo[(i,j)]=memo[(i-1,j)]+memo[(i-1,j-1)]
      
     return memo[(n-1,k)]+memo[(n-1,k-1)]
+    
+def memoize(f): #이항계수 top-down
+    memo={}
+    def helper(x,y):
+        if (x,y) not in memo:
+            memo[x,y]=f(x,y)
+        return memo[x,y]
+    return helper
+
+def binom(n,k):
+    if n<k:
+        return 0
+    if n<0 or k<0:
+        return 0
+    if k==0:
+        return 1
+    if k==n:
+        return 1
+    return binom(n-1,k)+binom(n-1,k-1)
+
+binom=memoize(binom)
