@@ -1,0 +1,45 @@
+def optimal_BST(p):    #p : 각 key의 검색 빈도
+    kk={} #어떤 key를 기준으로 나누는게 좋을지
+    memo={}
+    def memoize(f):
+        def helper(i,j):
+            if (i,j) not in memo:
+                if i<=j:
+                    memo[i,j]=f(i,j)
+            return memo[i,j]
+        return helper
+    
+    def opt(i,j):
+        if i>j:
+            return 0
+        if i==j:
+            kk[i,j]=i
+            return 1
+        pij=sum(p[i-1:j])
+        m=1+sum(p[i:j])/pij*opt(i+1,j) #sum(p[i-1:i])/pij*opt(i,i)+
+        kk[i,j]=i
+        for k in range(i+1,j+1):
+            if k==j:
+                compare=1+sum(p[i-1:k-1])/pij*opt(i,k-1)
+            else:
+                compare=1+sum(p[i-1:k-1])/pij*opt(i,k-1)+sum(p[k:j])/pij*opt(k+1,j)
+            if m>compare:
+                m=compare
+                kk[i,j]=k
+        return m    
+            
+    opt=memoize(opt)
+    opt(1,len(p))
+    print('table of opt[i,j]\n\n')
+    for r in range(1,len(p)+1):
+        print(' '*5*(r-1),end='')
+        for c in range(r,len(p)+1):
+            print('{:<.2f}'.format(memo[r,c]),end=' ')
+        print('\n')
+        
+    print('table of k[i,j]\n\n')
+    for r in range(1,len(p)+1):
+        print(' '*4*(r-1),end='')
+        for c in range(r,len(p)+1):
+            print('{:<3}'.format(kk[r,c]),end=' ')
+        print('\n')
