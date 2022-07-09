@@ -1,0 +1,58 @@
+def chain_matrix(d):    #if (3X6)*(6X2)*(2*6)*(6*4)*(4*5) => d=[3,6,2,6,4,5]
+    kk={} #opt(i,j)에서 몇번째 행렬을 기준으로 나누는게 최선인지
+    memo={}
+    def memoize(f):
+        def helper(i,j):
+            if (i,j) not in memo:
+                memo[i,j]=f(i,j)
+            return memo[i,j]
+        return helper
+
+    def opt(i,j):
+        if i>=j:
+            kk[i,j]=0
+            return 0
+        m=(opt(i,i)+opt(i+1,j)+d[i-1]*d[i+1-1]*d[j+1-1])
+        kk[i,j]=i
+        for k in range(i+1,j):
+            compare=(opt(i,k)+opt(k+1,j)+d[i-1]*d[k+1-1]*d[j+1-1])
+            if compare<m:
+                m=compare
+                kk[i,j]=k
+        return m
+    
+    def print_matrix(i,j):
+        if i==j:
+            print('A'+f'{i}',end='')
+            return
+     
+        if i<j:
+            if i==1 and j==len(d)-1:
+                print_matrix(i,kk[i,j])
+                print_matrix(kk[i,j]+1,j)
+            else:
+                print('(',end='')
+                print_matrix(i,kk[i,j])
+                print_matrix(kk[i,j]+1,j)
+                print(')',end='')
+            
+    opt=memoize(opt)
+    opt(1,len(d)-1)
+    print('table of opt[i,j]\n\n')
+    for r in range(1,len(d)):
+        print(' '*4*(r-1),end='')
+        for c in range(r,len(d)):
+            print('{:<3}'.format(memo[r,c]),end=' ')
+        print('\n')
+        
+    print()
+    print('table of k[i,j]\n\n')
+    for r in range(1,len(d)):
+        print(' '*4*(r-1),end='')
+        for c in range(r,len(d)):
+            print('{:<3}'.format(kk[r,c]),end=' ')
+        print('\n')
+        
+    print()
+    print('optimal chained matrix multiplication',end='\n\n')
+    print_matrix(1,len(d)-1)
